@@ -17,12 +17,12 @@ def login():
             if check_password_hash(user.password, password):
                 flash("Logged in!", category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('views.home', _external=True))
             else:
                 flash('Password is incorrect.', category='error')
         else:
             flash('Email does not exist.', category='error')
-    return render_template("login.html")
+    return render_template("login.html", user=current_user)
 
 @auth.route("/sign-up", methods=['GET', 'POST'])
 def sign_up():
@@ -35,35 +35,43 @@ def sign_up():
         # Check if all required fields are provided
         if not email or not username or not password1 or not password2:
             flash('All fields are required.', category='error')
-            return render_template("signup.html")
+            return render_template("signup.html", user=current_user)
 
         email_exists = User.query.filter_by(email=email).first()
         username_exists = User.query.filter_by(username=username).first()
 
         if email_exists:
             flash('Email is already in use.', category='error')
+            return render_template("signup.html", user=current_user)
         elif username_exists:
             flash('Username is already in use.', category='error')
+            return render_template("signup.html", user=current_user)
         elif password1 != password2:
             flash('Password don\'t match!', category='error')
+            return render_template("signup.html", user=current_user)
         elif len(username) < 2:
             flash('Username is too short.', category='error')
+            return render_template("signup.html", user=current_user)
         elif len(password1) < 6:
             flash('Password is too short.', category='error')
+            return render_template("signup.html", user=current_user)
         elif len(email) < 4:
             flash("Email is invalid.", category='error')
-        else:
-            new_user = User(email=email, username=username, password=generate_password_hash(password1, method='sha256'))
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user, remember=True)
-            flash('User created!', category='success')
-            return redirect(url_for('views.home'))
+            return render_template("signup.html", user=current_user)
+        
+        # Create new user with proper password hashing
+        hashed_password = generate_password_hash(password1, method='pbkdf2:sha256')
+        new_user = User(email=email, username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user, remember=True)
+        flash('User created successfully!', category='success')
+        return redirect(url_for('views.home', _external=True))
 
-    return render_template("signup.html")
+    return render_template("signup.html", user=current_user)
 
 @auth.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.home", _external=True))

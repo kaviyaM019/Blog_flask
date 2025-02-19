@@ -3,30 +3,33 @@
 <form method="POST">
     <h3 align="center">Sign Up</h3>
     <div class="form-group">
-        <label for="Username">Email Address</label>
+        <label for="username">Username</label>
         <input
          type="text"
-          id="Email" 
-          name="Email"
-          class="form-control"
-          placeholder="Enter Email"
-          />
-        <label for="Username">Username</label>
+         id="username" 
+         name="username"
+         class="form-control"
+         placeholder="Enter Username"
+         required
+        />
+        <label for="email">Email Address</label>
         <input
-         type="text"
-          id="Username" 
-          name="Username"
-          class="form-control"
-          placeholder="Enter Username"
-          />
-          
-          <label for="password1">Password</label>
+         type="email"
+         id="email" 
+         name="email"
+         class="form-control"
+         placeholder="Enter Email"
+         required
+        />
+        
+        <label for="password1">Password</label>
         <input
          type="password"
          id="password1" 
          name="password1"
          class="form-control"
          placeholder="Enter Password"
+         required
         />
         <label for="password2">Password Again</label>
         <input
@@ -35,20 +38,12 @@
          name="password2"
          class="form-control"
          placeholder="Enter Password Again"
+         required
         />
         <br/>
         <div align="center">
             <button class="btn btn-primary" type="submit">Sign Up</button>
-
-
-        
-
-
-        
+        </div>
     </div>
-    </div>
-
-
 </form>
-
 {% endblock %}
